@@ -1,6 +1,10 @@
 # Master thesis progress report
+[![Detectron2](https://img.shields.io/badge/Made%20with-Detectron_2-blue)](https://github.com/facebookresearch/detectron2) 
+
 This repository is used as a tracker for my master's thesis which I am currently working on.
 The main purpose is to improve crack detection DL algorithm in road damage detection and railway sleeper crack detection.
+
+Guided by dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?lang=en), supervisor at EPFL, Switzerland: prof. [Olga Fink](https://people.epfl.ch/olga.fink?lang=en), and co-supervisor at KTH, Sweden: prof. [Milan Horemuz](https://www.kth.se/profile/horemuz)
 
 ## Table of contents
 
@@ -10,10 +14,8 @@ The main purpose is to improve crack detection DL algorithm in road damage detec
   - [Data augmentation](#Data-augmentation)
       - [Perspective-awareness](#Perspective-awareness)
       - [Erasing damage](#Erasing-damage)
-  - [Object Detection Model](#Object-Detection-Model)
-      - [Faster R-CNN](#Faster-R-CNN)
-      - [Other](#Other)
   - [Results](#Results)
+  - [Analysis](#Analysis)
 
 - [Citation](#Citation)
 
@@ -33,7 +35,7 @@ RDDC2020 have some problems with truncated data and annotations. The problems ha
 #
 ## Road damage detection
 ### 1. Understanding object detection algorithm.
-To have a better understanding of the object detection algorithm, I have implemented a simple object detection algorithm using Faster R-CNN techniques from [Detectron2](https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md) following [Pham et al. (2020)](https://ieeexplore.ieee.org/document/9378027). It is common to use pre-trained model as a feature extractor part of the network. Detectron2 provides a lot of pre-trained models. I have used Faster R-CNN with ResNet-101 backbone (R101-FPN) and ResNeXt-101 backbone (X101-FPN), both pre-trained on [COCO dataset](https://cocodataset.org/#home). The model is trained on the road damage dataset. 
+To have a better understanding of the object detection algorithm, I have implemented a simple object detection algorithm using [Faster R-CNN](https://arxiv.org/abs/1506.01497) base with [Feature Pyramid Network](https://arxiv.org/abs/1612.03144) as the backbone network provided by [Detectron2](https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md) following [Pham et al. (2020)](https://ieeexplore.ieee.org/document/9378027). It is common to use pre-trained model as a feature extractor part of the network. Detectron2 provides a lot of pre-trained models. I have used Faster R-CNN with ResNet-101 backbone (R101-FPN) and ResNeXt-101 backbone (X101-FPN), both pre-trained on [COCO dataset](https://cocodataset.org/#home). The model is trained on the road damage dataset. 
 
 ### 2. Data augmentation
 Data augmentation is a technique to increase the size of the dataset by applying some transformations to the original images. The purpose is to make the model more robust to the variation of the data. From Pham et al. (2020), horizontal flipping, resizing, and rotation are used. The images look like this: 
@@ -68,18 +70,14 @@ Now if we plot a ruler onto the original image, the ruler will look like the ima
 
  #### <ins>Erasing damage</ins>
 This technique is purposed by [Lis (2020b)](https://arxiv.org/abs/2012.13633) who used this technique to make to model recognize the drivable road path for autonomous  vehicles and [F. Kluger et al (2018)](https://ieeexplore.ieee.org/document/8622318) use the CycleGAN model to train on removed-damage images and added-generated-damage images. However, in this study, I will only focus on erasing damage, either erase it completely or partially. The erasing process can be used by any inpainting model, in this study I used [MAT: Mask-Aware Transformer for Large Hole Image Inpainting
-](https://arxiv.org/pdf/2203.15270.pdf). Please clone this [MAT's Github](https://github.com/fenglinglwb/MAT.git).
+](https://arxiv.org/pdf/2203.15270.pdf), follow the code [MAT's Github](https://github.com/fenglinglwb/MAT.git).
 
 <img src="images/Erase_before.png"  height="250" />
 <img src="images/Erase_after.png"  height="250" />
 <img src="images/Erase_completely.jpg"  height="250" />
 
 #
-###  3. Object Detection Model 
-Up to this point, I only played around with [Faster R-CNN with ResNet+FPN](https://arxiv.org/pdf/1612.03144.pdf) backbone. However, there are other object detection architectures that reported outperform Faster R-CNN. For example [Cascade R-CNN](https://arxiv.org/pdf/1712.00726.pdf)
-
-#
-### 4. Results
+### 3. Results
 | Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
 | --- | --- | --- | --- | --- | --- | 
 | R101-FPN | 0.55 | 0.51 | 0.53 | 115 000 | 0.57 |
@@ -88,13 +86,44 @@ Up to this point, I only played around with [Faster R-CNN with ResNet+FPN](https
 | X101-FPN + Road Segment | 0.61 | 0.46 | 0.53 | 120 000 | 0.56 |
 | X101-FPN + Perspective-awareness | 0.51 | 0.49 | 0.50 | 130 000 | 0.53 |
 | X101-FPN + Erasing damage | 0.59 | 0.49 | 0.54 | 120 000 | 0.59 |
+| X101-FPN + Aug + Ed |  |  |  | | |
+| X101-FPN + Pa + Ed |  |  |  | | |
 
+Note: the results came from one training on the same seed. More trainings on different seed are needed to validate the results. 
 
+#
+### 4. Analysis
+On the left side visualizations of each model show output feature maps from the FPN. P2 denote the first feature map and the others follow the same analogous to P6 which is the last feature map. Thus, P6 has larger perceptive field than P2. On the right is the visualization of objectness map (the title in the images are incorrectly). The objectness_logit maps (the predicted objectness logits for all anchors) are applied Sigmoid functioon to get the objectness map. It is importance to recall that all feature map and its objectness map contribute to the final prediction. JET color map is used on both visualizations; the red color represents higher values where the blue color represent smaller values. 
 
- 
+In general, the model can detect the near damages on the road where are obvious to human eye i.e. the pothole damage (D40 for ground truth and class 3 for the prediction box). Additionally, the perspective-aware model can detect a further damage than the other models but it misclassified it. Even more, the larger perceptive field of the model (P4 to P6) started to distinguish the road surface better than the other models.
 
+Note that this is just a visualization from feature map of the model, it doesn't give the same meaning as the like of explainable AI such as [D-RISE](https://arxiv.org/abs/2006.03204). 
 
+<!-- #### <ins>R101-FPN model</ins>
+<img src="images\infer_output\r101\115000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\r101\115000\Japan_002319_aomv.png"  height="250" /> -->
 
+#### <ins>X101-FPN model</ins>
+<img src="images\infer_output\x101\95000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\x101\95000\Japan_002319_aomv.png"  height="250" />
+<!-- 
+#### <ins>X101-FPN augmentation model</ins>
+<img src="images\infer_output\x101_augmentation\125000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\x101_augmentation\125000\Japan_002319_aomv.png"  height="250" />
+
+#### <ins>X101-FPN road segmentation model</ins>
+<img src="images\infer_output\x101_road_segmentation\120000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\x101_road_segmentation\120000\Japan_002319_aomv.png"  height="250" /> -->
+
+#### <ins>Perspective-aware</ins>
+<img src="images\infer_output\x101_psptiv\120000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\x101_psptiv\120000\Japan_002319_aomv.png"  height="250" />
+
+#### <ins>Erasing Damage</ins>
+<img src="images\infer_output\x101_erase\120000\Japan_002319_fmv.png" height="250" />
+<img src="images\infer_output\x101_erase\120000\Japan_002319_aomv.png" height="250" />
+
+#
 ## Citation
 Pham, V., Pham, C., & Dang, T. (2020). Road Damage Detection and Classification with Detectron2 and Faster R-CNN. https://doi.org/10.1109/bigdata50022.2020.9378027
 
@@ -103,3 +132,8 @@ Lis, K. (2022, October 4). Perspective Aware Road Obstacle Detection. arXiv.org.
 Lis, K. (2020, December 25). Detecting Road Obstacles by Erasing Them. arXiv.org. https://arxiv.org/abs/2012.13633
 
 F. Kluger et al., "Region-based Cycle-Consistent Data Augmentation for Object Detection," 2018 IEEE International Conference on Big Data (Big Data), Seattle, WA, USA, 2018, pp. 5205-5211, doi: 10.1109/BigData.2018.8622318.
+
+#
+## Note 
+Given the time constraint, I only used Faster R-CNN with ResNet+FPN backbone.
+There are many other models with different architecture and backbone that have been used in the RDDC like [YOLOv5](https://ieeexplore.ieee.org/document/9377833), [Cascade R-CNN](https://arxiv.org/pdf/1712.00726.pdf), and even [Swin Transformer](https://arxiv.org/abs/2211.11362) (the winner of RDDC2022).
