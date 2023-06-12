@@ -29,7 +29,7 @@ Guided by dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?l
 
 Please note that the dataset didn't come with annotation for the test dataset. The participant have to . Thus, participant have to submit the file in the submission format to the organizer then the organizer will report the result on [their website.](https://crddc2022.sekilab.global/submissions/). The results in this thesis will be report based on evaluation datasets. The partition of the dataset can be seen in dataset_partition.
 
-RDDC2020 have some problems with truncated data and annotations. The problems have been addressed and fixed in RDDC2022. The dataset is available [here](https://figshare.com/articles/dataset/RDD2022_-_The_multi-national_Road_Damage_Dataset_released_through_CRDDC_2022/21431547). The dataset is open to the public. More detail about the dataset can be found in [the link](https://arxiv.org/abs/2209.08538). The reason why this thesis started at RDDC2020 is because the size of the dataset is smaller and easier to work with. In the future, I will work with RDDC2022.
+RDDC2020 have some problems with truncated data and annotations. The problems have been addressed and fixed in RDDC2022. The dataset is available [here](https://figshare.com/articles/dataset/RDD2022_-_The_multi-national_Road_Damage_Dataset_released_through_CRDDC_2022/21431547). The dataset is open to the public. More detail about the dataset can be found in [the link](https://arxiv.org/abs/2209.08538). The reason why this thesis started at RDDC2020 is because the size of the dataset is smaller and easier to work with. In the future, I might work with RDDC2022.
 
 2. Sleeper crack dataset acquired from diagnostic locomotives came from the Swiss Federal Railways (SBB), and acquired from UAVs came from the Matterhorn Gotthard Railway (MGB). Both are private data.
 #
@@ -122,6 +122,13 @@ Note that this is just a visualization from feature map of the model, it doesn't
 #### <ins>Erasing Damage</ins>
 <img src="images\infer_output\x101_erase\120000\Japan_002319_fmv.png" height="250" />
 <img src="images\infer_output\x101_erase\120000\Japan_002319_aomv.png" height="250" />
+
+#
+## Testing on a random video on Youtube
+Note that the label show class labels; 0 to 3 and its predicted score. So 0 98% means class label 0 with 98% predicted score. The score threshold is 0.70.
+<video src='images\x101_120_000.mp4' hight=180/>
+
+[source at 2.23](https://www.youtube.com/watch?v=JzyRESNfhxo&t=977s) 
 
 #
 ## Citation
