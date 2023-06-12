@@ -134,8 +134,7 @@ Note that this is just a visualization from feature map of the model, it doesn't
 
 #
 ## Testing on a random video on Youtube
-Note that the label show class labels; 0 to 3 and its predicted score. So 0 98% means class label 0 with 98% predicted score. The score threshold is 0.70.
-<video src='images\x101_120_000_EDIT.mp4' hight=180/>
+Note that the label show class labels; 0 to 3 and its predicted score. So 0 98% means class label 0 with 98% predicted score. The score threshold is 0.70. [Download](images\x101_120_000_EDIT.mp4)
 
 [source at 2.23](https://www.youtube.com/watch?v=JzyRESNfhxo&t=977s) 
 
