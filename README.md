@@ -31,6 +31,15 @@ Please note that the dataset didn't come with annotation for the test dataset. T
 
 RDDC2020 have some problems with truncated data and annotations. The problems have been addressed and fixed in RDDC2022. The dataset is available [here](https://figshare.com/articles/dataset/RDD2022_-_The_multi-national_Road_Damage_Dataset_released_through_CRDDC_2022/21431547). The dataset is open to the public. More detail about the dataset can be found in [the link](https://arxiv.org/abs/2209.08538). The reason why this thesis started at RDDC2020 is because the size of the dataset is smaller and easier to work with. In the future, I might work with RDDC2022.
 
+Road damage types in RDDC2020 and RDDC2022
+| Order | Annotation | Damage Type |
+| :---: | :---: | :---: |
+| 0 | D00 | Longitudinal Crack |
+| 1 | D10 | Transverse Crack |
+| 2 | D20 | Alligator Crack |
+| 3 | D40 | Pothole |
+
+
 2. Sleeper crack dataset acquired from diagnostic locomotives came from the Swiss Federal Railways (SBB), and acquired from UAVs came from the Matterhorn Gotthard Railway (MGB). Both are private data.
 #
 ## Road damage detection
@@ -126,7 +135,7 @@ Note that this is just a visualization from feature map of the model, it doesn't
 #
 ## Testing on a random video on Youtube
 Note that the label show class labels; 0 to 3 and its predicted score. So 0 98% means class label 0 with 98% predicted score. The score threshold is 0.70.
-<video src='images\x101_120_000.mp4' hight=180/>
+<video src='images\x101_120_000_EDIT.mp4' hight=180/>
 
 [source at 2.23](https://www.youtube.com/watch?v=JzyRESNfhxo&t=977s) 
 
