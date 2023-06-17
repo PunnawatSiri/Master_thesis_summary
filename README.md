@@ -47,15 +47,21 @@ Road damage types in RDDC2020 and RDDC2022
 To have a better understanding of the object detection algorithm, I have implemented a simple object detection algorithm using [Faster R-CNN](https://arxiv.org/abs/1506.01497) base with [Feature Pyramid Network](https://arxiv.org/abs/1612.03144) as the backbone network provided by [Detectron2](https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md) following [Pham et al. (2020)](https://ieeexplore.ieee.org/document/9378027). It is common to use pre-trained model as a feature extractor part of the network. Detectron2 provides a lot of pre-trained models. I have used Faster R-CNN with ResNet-101 backbone (R101-FPN) and ResNeXt-101 backbone (X101-FPN), both pre-trained on [COCO dataset](https://cocodataset.org/#home). The model is trained on the road damage dataset. 
 
 ### 2. Data augmentation
-Data augmentation is a technique to applying damage of other image place it to a background image with transformations. The purpose is to reduce data imbalance and make the model more robust to the variation of the data. From Pham et al. (2020), horizontal flipping, resizing, and rotation are used. The images look like this: 
+Data augmentation is a technique to applying damage of other image place it to a background image with transformations and color transfer technique. The purpose is to reduce data imbalance and make the model more robust to the variation of the data. From Pham et al. (2020), horizontal flipping, resizing, and rotation are used. The images look like this: 
 
-<img src="images/aug_problem1.png" height="250" />
 <img src="images/aug_problem2.png" height="250" />
 <img src="images/aug_problem4.png" height="250" />
 
 The problem is that this augmentation technique is lack realistic, the placing is too random and the model is not robust to the variation of the data. Resulting in slightly worse performance than the original model.
 
  Therefore, I have tried to implement other data augmentation techniques to improve the performance of the original model.
+#### <ins>Road segmentation</ins> 
+One factor that make vanila augmentation technique look not realistic is that the augmentaion can be placed all over the image. This augmentation is try to solve the problem by using road segmentation model to determine the road surface of the image. The result is shown below.
+
+<img src="images/aug_problem1.png" height="250" />
+
+The problem of this augmentation is that the color transfer technique doesn't help the synthetic damage blended into the surrounding pixel of the background image. Additionally, the image that taken from other background have the size from its original perspective. Hence, the persepctive-aware is introduced to solve the problem.  
+
  #### <ins>Perspective-awareness</ins> 
 The technique is introduced by [Lis (2020a)](https://arxiv.org/abs/2210.01779). The idea is to consider the apparent size of the obstacles decreases as their distance to the vehicle increases in road obstacle detection applications. To inject synthetic damage into the image in a perspective-aware manner, the augmentation is applied to the image in the following steps: 
 1. Use any pre-trained segmentation model to segment the road surface from the image. For this project, Panoptic FPN with ResNet-101 backbone pre-trained on the COCO dataset is used.
