@@ -109,28 +109,28 @@ In general, the model can detect the near damages on the road where are obvious 
 Note that this is just a visualization from feature map of the model, it doesn't give the same meaning as the like of explainable AI such as [D-RISE](https://arxiv.org/abs/2006.03204). 
 
 <!-- #### <ins>R101-FPN model</ins>
-<img src="images\infer_output\r101\115000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\r101\115000\Japan_002319_aomv.png"  height="250" /> -->
+<img src="images/infer_output/r101/115000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/r101/115000/Japan_002319_aomv.png"  height="250" /> -->
 
 #### <ins>X101-FPN model</ins>
-<img src="images\infer_output\x101\95000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\x101\95000\Japan_002319_aomv.png"  height="250" />
+<img src="images/infer_output/x101/95000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/x101/95000/Japan_002319_aomv.png"  height="250" />
 <!-- 
 #### <ins>X101-FPN augmentation model</ins>
-<img src="images\infer_output\x101_augmentation\125000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\x101_augmentation\125000\Japan_002319_aomv.png"  height="250" />
+<img src="images/infer_output/x101_augmentation/125000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/x101_augmentation/125000/Japan_002319_aomv.png"  height="250" />
 
 #### <ins>X101-FPN road segmentation model</ins>
-<img src="images\infer_output\x101_road_segmentation\120000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\x101_road_segmentation\120000\Japan_002319_aomv.png"  height="250" /> -->
+<img src="images/infer_output/x101_road_segmentation/120000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/x101_road_segmentation/120000/Japan_002319_aomv.png"  height="250" /> -->
 
 #### <ins>Perspective-aware</ins>
-<img src="images\infer_output\x101_psptiv\120000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\x101_psptiv\120000\Japan_002319_aomv.png"  height="250" />
+<img src="images/infer_output/x101_psptiv/120000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/x101_psptiv/120000/Japan_002319_aomv.png"  height="250" />
 
 #### <ins>Erasing Damage</ins>
-<img src="images\infer_output\x101_erase\120000\Japan_002319_fmv.png" height="250" />
-<img src="images\infer_output\x101_erase\120000\Japan_002319_aomv.png" height="250" />
+<img src="images/infer_output/x101_erase/120000/Japan_002319_fmv.png" height="250" />
+<img src="images/infer_output/x101_erase/120000/Japan_002319_aomv.png" height="250" />
 
 #
 ## Testing on a random video on Youtube
