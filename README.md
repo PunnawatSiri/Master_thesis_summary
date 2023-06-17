@@ -47,7 +47,7 @@ Road damage types in RDDC2020 and RDDC2022
 To have a better understanding of the object detection algorithm, I have implemented a simple object detection algorithm using [Faster R-CNN](https://arxiv.org/abs/1506.01497) base with [Feature Pyramid Network](https://arxiv.org/abs/1612.03144) as the backbone network provided by [Detectron2](https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md) following [Pham et al. (2020)](https://ieeexplore.ieee.org/document/9378027). It is common to use pre-trained model as a feature extractor part of the network. Detectron2 provides a lot of pre-trained models. I have used Faster R-CNN with ResNet-101 backbone (R101-FPN) and ResNeXt-101 backbone (X101-FPN), both pre-trained on [COCO dataset](https://cocodataset.org/#home). The model is trained on the road damage dataset. 
 
 ### 2. Data augmentation
-Data augmentation is a technique to increase the size of the dataset by applying some transformations to the original images. The purpose is to make the model more robust to the variation of the data. From Pham et al. (2020), horizontal flipping, resizing, and rotation are used. The images look like this: 
+Data augmentation is a technique to applying damage of other image place it to a background image with transformations. The purpose is to reduce data imbalance and make the model more robust to the variation of the data. From Pham et al. (2020), horizontal flipping, resizing, and rotation are used. The images look like this: 
 
 <img src="images/aug_problem1.png" height="250" />
 <img src="images/aug_problem2.png" height="250" />
@@ -84,6 +84,13 @@ This technique is purposed by [Lis (2020b)](https://arxiv.org/abs/2012.13633) wh
 <img src="images/Erase_before.png"  height="250" />
 <img src="images/Erase_after.png"  height="250" />
 <img src="images/Erase_completely.jpg"  height="250" />
+
+ #### <ins>Erasing damage and augment perspective-aware damage</ins>
+This technique is the combination of both erasing and perspective-awareness. The goal of this augmentation technique is to reduce false positive and data imbalance. The reults of the data augmentation techniques are shown below.
+
+<img src="images/Erase_inject_before.png"  height="250" />
+<img src="images/Erase_inject_after.png"  height="250" />
+
 
 #
 ### 3. Results
