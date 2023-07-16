@@ -40,7 +40,12 @@ Road damage types in RDDC2020 and RDDC2022
 | 3 | D40 | Pothole |
 
 
-2. Sleeper crack dataset acquired from diagnostic locomotives came from the Swiss Federal Railways (SBB), and acquired from UAVs came from the Matterhorn Gotthard Railway (MGB). Both are private data.
+2. Sleeper crack dataset came from two sources: acquired from diagnostic locomotives came from the Swiss Federal Railways (SBB), and will be acquired from UAVs came from the Matterhorn Gotthard Railway (MGB) - the late is still on the process of dealing with drone provider. Both are private data. Below is the example images of sleeper defects from SBB (Rombach, 2022).
+
+<img src="images/sleeper_example.jpg" height="250" />
+
+Compare between road damage and sleeper defect datasets, one can see that sleeper defect data is a lot less challenge than road damage dataset. The reason is that sleeper defect dataset is taken from a fixed perspective in controled environment. Thus, it is less piority than road damage dataset in term of finding improving the base model with data augmentation technique.
+
 #
 ## Road damage detection
 ### 1. Understanding object detection algorithm.
@@ -100,6 +105,8 @@ This technique is the combination of both erasing and perspective-awareness. The
 
 #
 ### 3. Results
+ #### <ins>Road damage dataset</ins>
+ The results show below from evalutation dataset (partition from train dataset) since there is no annotation provided for test dataset.
 | Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
 | --- | --- | --- | --- | --- | --- | 
 | R101-FPN | 0.55 | 0.51 | 0.53 | 115 000 | 0.57 |
@@ -108,10 +115,16 @@ This technique is the combination of both erasing and perspective-awareness. The
 | X101-FPN + Road Segment | 0.61 | 0.46 | 0.53 | 120 000 | 0.56 |
 | X101-FPN + Perspective-awareness | 0.51 | 0.49 | 0.50 | 130 000 | 0.53 |
 | X101-FPN + Erasing damage | 0.59 | 0.49 | 0.54 | 120 000 | 0.59 |
-| X101-FPN + Aug + Ed |  |  |  | | |
-| X101-FPN + Pa + Ed |  |  |  | | |
+| X101-FPN + Pa + Ed | 0.52 | 0.43 | 0.47 | 155 000 | 0.55 |
 
-Note: the results came from one training on the same seed. More trainings on different seed are needed to validate the results. 
+ #### <ins>Sleeper defect dataset</ins>
+ The results show below from test dataset.
+| Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
+| --- | --- | --- | --- | --- | --- | 
+| R101-FPN | 0.874 | 0.905 | 0.889 | 45 000 | 0.90 |
+| X101-FPN | 0.915 | 0.887 | 0.901 | 50 000 | 0.96 | 
+
+Note: the results came from one training on the same seed. More trainings on different seed are needed to validate the results if time avialable. 
 
 #
 ### 4. Analysis
@@ -160,6 +173,8 @@ Lis, K. (2022, October 4). Perspective Aware Road Obstacle Detection. arXiv.org.
 Lis, K. (2020, December 25). Detecting Road Obstacles by Erasing Them. arXiv.org. https://arxiv.org/abs/2012.13633
 
 F. Kluger et al., "Region-based Cycle-Consistent Data Augmentation for Object Detection," 2018 IEEE International Conference on Big Data (Big Data), Seattle, WA, USA, 2018, pp. 5205-5211, doi: 10.1109/BigData.2018.8622318.
+
+Rombach, K. (2022, August 28). Contrastive feature learning for fault detection and diagnostics in railway applications. arXiv.org. https://arxiv.org/abs/2208.13288
 
 #
 ## Note 
