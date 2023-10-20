@@ -1,10 +1,13 @@
-# Master thesis progress report
+# Master thesis summary
 [![Detectron2](https://img.shields.io/badge/Made%20with-Detectron_2-blue)](https://github.com/facebookresearch/detectron2) 
 
-This repository is used as a tracker for my master's thesis which I am currently working on.
-The main purpose is to improve crack detection DL algorithm in road damage detection and railway sleeper crack detection.
+This repository is used as a quick summary for my master's thesis. The main purpose is to improve crack detection DL algorithm in road damage detection and railway sleeper crack detection.
 
-Guided by dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?lang=en), supervisor at EPFL, Switzerland: prof. [Olga Fink](https://people.epfl.ch/olga.fink?lang=en), and co-supervisor at KTH, Sweden: prof. [Milan Horemuz](https://www.kth.se/profile/horemuz)
+Title: Data Augmentations for Improving Vision-Based Damage Detection in Land Transport Infrastructure
+
+Guided by Dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?lang=en)
+
+Supervisor at EPFL, Switzerland: Prof. [Olga Fink](https://people.epfl.ch/olga.fink?lang=en), and co-supervisor at KTH, Sweden: Prof. [Milan Horemuz](https://www.kth.se/profile/horemuz)
 
 ## Table of contents
 
@@ -16,7 +19,7 @@ Guided by dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?l
       - [Erasing damage](#Erasing-damage)
   - [Results](#Results)
   - [Analysis](#Analysis)
-
+- [Test on a random video on Youtube](#Testing-on-a-random-video-on-Youtube)
 - [Citation](#Citation)
 
 #
@@ -61,19 +64,21 @@ The problem is that this augmentation technique is lack realistic, the placing i
 
  Therefore, I have tried to implement other data augmentation techniques to improve the performance of the original model.
 #### <ins>Road segmentation</ins> 
-One factor that make vanila augmentation technique look not realistic is that the augmentaion can be placed all over the image. This augmentation is try to solve the problem by using road segmentation model to determine the road surface of the image. The result is shown below.
+To improve the location of the synthetic damage, A segmentation model is used to determine a road area or a sleeper area. [Panoptic segmentation model](https://github.com/facebookresearch/detectron2/tree/main/projects/Panoptic-DeepLab) is used for the RDDC dataset and [Segment-anything model](https://github.com/facebookresearch/segment-anything) is used for the sleeper defect dataset. The result is shown below. The results from the segmentation model are shown below.
 
-<img src="images/aug_problem1.png" height="250" />
-
-The problem of this augmentation is that the color transfer technique doesn't help the synthetic damage blended into the surrounding pixel of the background image. Additionally, the image that taken from other background have the size from its original perspective. Hence, the persepctive-aware is introduced to solve the problem.  
-
- #### <ins>Perspective-awareness</ins> 
-The technique is introduced by [Lis (2020a)](https://arxiv.org/abs/2210.01779). The idea is to consider the apparent size of the obstacles decreases as their distance to the vehicle increases in road obstacle detection applications. To inject synthetic damage into the image in a perspective-aware manner, the augmentation is applied to the image in the following steps: 
-1. Use any pre-trained segmentation model to segment the road surface from the image. For this project, Panoptic FPN with ResNet-101 backbone pre-trained on the COCO dataset is used.
+Segmentation results from a random image on the RDDC dataset.
 
 <img src="images/perfect1.png" height="250" />
 
-2. Determine the perspective map by using the segmentation mask from the previous step. The perspective map is a 2D array with the same size as the image. Each element of the array is the distance from the pixel to the camera.
+Segmentation results from a random image on the SBB dataset.
+
+<img src="images/sleeper_segmentation.png" height="250" />
+
+
+ #### <ins>Perspective-awareness</ins> 
+The technique is introduced by [Lis (2020a)](https://arxiv.org/abs/2210.01779). The idea is to consider the apparent size of the obstacles decreases as their distance to the vehicle increases in road obstacle detection applications. To inject synthetic damage into the image in a perspective-aware manner, the augmentation is applied to the image in the following steps: 
+
+1. Determine the perspective map by using the segmentation mask from the previous step. The perspective map is a 2D array with the same size as the image. Each element of the array is the distance from the pixel to the camera.
 
 <img src="images/perfect2.png"  height="250" />
 
@@ -81,7 +86,7 @@ Now if we plot a ruler onto the original image, the ruler will look like the ima
 
 <img src="images/perfect3.png"  height="250" />
 
-3. After determining  the perspective maps for damages and background image, the damages are randomly placed on the background image. The damages will be placed into the background that has a similar perspective. The place of the damage is random but the size of the damage is according to the scale calculated from the perspective maps of damage and background image. Additionally, to make the injected damage looks more realistic [Poisson blending](https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf) is used to blend the damage into the background image. The result is shown below.
+2. After determining  the perspective maps for damages and background image, the damages are randomly placed on the background image. The damages will be placed into the background that has a similar perspective. The place of the damage is random but the size of the damage is according to the scale calculated from the perspective maps of damage and background image. Additionally, to make the injected damage looks more realistic [Poisson blending](https://www.cs.jhu.edu/~misha/Fall07/Papers/Perez03.pdf) is used to blend the damage into the background image. The result is shown below.
 
 <img src="images/perspective_aug1.png"  height="250" />
 <img src="images/perspective_aug2.png"  height="250" />
@@ -97,66 +102,87 @@ This technique is purposed by [Lis (2020b)](https://arxiv.org/abs/2012.13633) wh
 <img src="images/Erase_completely.jpg"  height="250" />
 
  #### <ins>Erasing damage and augment perspective-aware damage</ins>
-This technique is the combination of both erasing and perspective-awareness. The goal of this augmentation technique is to reduce false positive and data imbalance. The reults of the data augmentation techniques are shown below.
+This technique is the combination of both erasing and perspective-awareness. The goal of this augmentation technique is to reduce false positives and data imbalance. The results of the data augmentation techniques are shown below.
+
+The augmentation results on the RDDC dataset. (left: before the augmentation, right: after the augmentation)
 
 <img src="images/Erase_inject_before.png"  height="250" />
 <img src="images/Erase_inject_after.png"  height="250" />
 
+The augmentation results on the SBB dataset.
 
-#
+<img src="images/erase_inject_spalling.png"  height="500" />
+
+
 ### 3. Results
  #### <ins>Road damage dataset</ins>
- The results show below from evalutation dataset (partition from train dataset) since there is no annotation provided for test dataset.
+ The results are shown below from the test dataset (partition from the training dataset) since no annotation is provided for the test dataset.
+ 
+-> Testing results from RDDC dataset on Japan
+| Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
+| --- | --- | --- | --- | --- | --- | 
+| X101-FPN | 0.515 | 0.445 | 0.483 | 120 000 | 0.56 |
+| + RandomAug | 0.504 | 0.442 | 0.473 | 125 000 | 0.51 |
+| + RS + InjectPa | 0.496 | 0.442 | 0.471 | 145 000 | 0.51 |
+| + Erase + RS + InjectPa | <strong>0.646</strong>  | <strong>0.466</strong>  | <strong>0.541</strong>  | 150 000 | <strong>0.61</strong>  |
+
+-> Testing results from RDDC dataset on Czech and India
+
+| Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
+| --- | --- | --- | --- | --- | --- | 
+| <ins>Czech<ins> |
+| X101-FPN | 0.532 | 0.458 | 0.514 | 75 000 |0.81 |
+| + Erase + RS + InjectPa  | 0.563 | 0.447 | 0.512 | 65 000 | 0.75 |
+| <ins>India</ins> |
+| X101-FPN | 0.612  | 0.462 | 0.542 | 95 000 | 0.80 |
+| + Erase + RS + InjectPa  | 0.566 | 0.490 | 0.525 | 115 000 | 0.56 |
+
+-> Testing results from RDDC dataset on three countrie
 | Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
 | --- | --- | --- | --- | --- | --- | 
 | R101-FPN | 0.55 | 0.51 | 0.53 | 115 000 | 0.57 |
-| X101-FPN | 0.60 | 0.50 | 0.55 | 95 000 | 0.59 | 
-| X101-FPN + Augmentation | 0.61 | 0.48 | 0.54 | 125 000 | 0.62 |
-| X101-FPN + Road Segment | 0.61 | 0.46 | 0.53 | 120 000 | 0.56 |
-| X101-FPN + Perspective-awareness | 0.51 | 0.49 | 0.50 | 130 000 | 0.53 |
-| X101-FPN + Erasing damage | 0.59 | 0.49 | 0.54 | 120 000 | 0.59 |
-| X101-FPN + Pa + Ed | 0.52 | 0.43 | 0.47 | 155 000 | 0.55 |
+| X101-FPN | 0.60 | 0.50 | <strong>0.55</strong> | <strong>95 000</strong> | 0.59 | 
+| + RandomAug | 0.61 | 0.48 | 0.54 | 125 000 | 0.62 |
+| + RS | 0.61 | 0.46 | 0.53 | 120 000 | 0.56 |
+| + RS + InjectPa | 0.51 | 0.49 | 0.50 | 130 000 | 0.53 |
+| + Erase | 0.59 | 0.49 | 0.54 | 120 000 | 0.59 |
+| + Erase + RS + InjectPa | 0.52 | 0.43 | 0.47 | 155 000 | 0.55 |
+
+Note:
+* RandomAug implies randomly sampling and injecting damage
+* RS stands for Road Segmentation
+* InjectPa stands for injecting perspective-aware damage
+
 
  #### <ins>Sleeper defect dataset</ins>
- The results show below from test dataset.
-| Model | Precision | Recall | F1 score | Converge iteration | Score threshold | 
-| --- | --- | --- | --- | --- | --- | 
-| R101-FPN | 0.874 | 0.905 | 0.889 | 45 000 | 0.90 |
-| X101-FPN | 0.915 | 0.887 | 0.901 | 50 000 | 0.96 | 
+ The results show below from evaluation dataset (during inference).
+| Model | F1 score | AP50 | Converge iteration | Time (hr) | 
+| --- | --- | --- | --- | --- |
+| R50-FPN | <strong>0.767</strong> | 75.40 | 40 000 | 2 |
+| + SAM + Erase + Inject | 0.750 | <ins>80.05</ins> | 60 000 | 12 |
+| R50-FPN-fr50 |  0.623 | 65.72 | 72 000 | 3.5 |
+| + SAM + Erase + Inject | 0.624 | 63.93 | 98 000 | 25 |
+| X101-FPN | 0.750 | 75.13 | 35 000 | 4 | 
+| + SAM + Erase + Inject | 0.751 | 75.15 | 63 000 | 18 |
 
 Note: the results came from one training on the same seed. More trainings on different seed are needed to validate the results if time avialable. 
 
 #
 ### 4. Analysis
-On the left side visualizations of each model show output feature maps from the FPN. P2 denote the first feature map and the others follow the same analogous to P6 which is the last feature map. Thus, P6 has larger perceptive field than P2. On the right is the visualization of objectness map (the title in the images are incorrectly). The objectness_logit maps (the predicted objectness logits for all anchors) are applied Sigmoid functioon to get the objectness map. It is importance to recall that all feature map and its objectness map contribute to the final prediction. JET color map is used on both visualizations; the red color represents higher values where the blue color represent smaller values. 
+The performance of the augmentation tachnique could only improve the model that trained on images from Japan from the RDDC dataset with Erase + RS + InjectPa. But it does not improve the base model when trained on Czech, India or all countires simontaniously. 
 
-In general, the model can detect the near damages on the road where are obvious to human eye i.e. the pothole damage (D40 for ground truth and class 3 for the prediction box). Additionally, the perspective-aware model can detect a further damage than the other models but it misclassified it. Even more, the larger perceptive field of the model (P4 to P6) started to distinguish the road surface better than the other models.
+On the other hand, when trains the model on the SBB dataset. The same augmentation tecnique does not improve F1 score but rather improve AP50 and validation loss of the model (the validation loss isn't shown here).
 
-Note that this is just a visualization from feature map of the model, it doesn't give the same meaning as the like of explainable AI such as [D-RISE](https://arxiv.org/abs/2006.03204). 
+Finally, the theis experiments the explainable AI (XAI) by using [D-RISE](https://arxiv.org/abs/2006.03204). The XAI helps exploring the model into a deeper level by providing saliency map from the model's prediction. 
 
-<!-- #### <ins>R101-FPN model</ins>
-<img src="images/infer_output/r101/115000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/r101/115000/Japan_002319_aomv.png"  height="250" /> -->
+#### <ins>X101-FPN + Erase + RS + InjectPa model</ins>
+First, ground truth is used as the target prediction. The results show that the model trained with the augmentation cannot damage no.3 class D20 even though ground truth is shown in the model. Notice that the model focuses on pixels outside the bounding box. It means that the quality of the bounding box is not good enough for the model to learn, or the model is not precise enough.
 
-#### <ins>X101-FPN model</ins>
-<img src="images/infer_output/x101/95000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/x101/95000/Japan_002319_aomv.png"  height="250" />
-<!-- 
-#### <ins>X101-FPN augmentation model</ins>
-<img src="images/infer_output/x101_augmentation/125000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/x101_augmentation/125000/Japan_002319_aomv.png"  height="250" />
+<img src="images/erase_inject_gt.png"  height="200" />
 
-#### <ins>X101-FPN road segmentation model</ins>
-<img src="images/infer_output/x101_road_segmentation/120000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/x101_road_segmentation/120000/Japan_002319_aomv.png"  height="250" /> -->
+Then, the model's prediction is used as the target prediction. The results shows that the model focus on the features of the damage on the road accurately. 
 
-#### <ins>Perspective-aware</ins>
-<img src="images/infer_output/x101_psptiv/120000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/x101_psptiv/120000/Japan_002319_aomv.png"  height="250" />
-
-#### <ins>Erasing Damage</ins>
-<img src="images/infer_output/x101_erase/120000/Japan_002319_fmv.png" height="250" />
-<img src="images/infer_output/x101_erase/120000/Japan_002319_aomv.png" height="250" />
+<img src="images/erase_inject_prd_2.png" height="250" />
 
 #
 ## Testing on a random video on Youtube
@@ -175,8 +201,3 @@ Lis, K. (2020, December 25). Detecting Road Obstacles by Erasing Them. arXiv.org
 F. Kluger et al., "Region-based Cycle-Consistent Data Augmentation for Object Detection," 2018 IEEE International Conference on Big Data (Big Data), Seattle, WA, USA, 2018, pp. 5205-5211, doi: 10.1109/BigData.2018.8622318.
 
 Rombach, K. (2022, August 28). Contrastive feature learning for fault detection and diagnostics in railway applications. arXiv.org. https://arxiv.org/abs/2208.13288
-
-#
-## Note 
-Given the time constraint, I only used Faster R-CNN with ResNet+FPN backbone.
-There are many other models with different architecture and backbone that have been used in the RDDC like [YOLOv5](https://ieeexplore.ieee.org/document/9377833), [Cascade R-CNN](https://arxiv.org/pdf/1712.00726.pdf), and even [Swin Transformer](https://arxiv.org/abs/2211.11362) (the winner of RDDC2022).
