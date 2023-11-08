@@ -9,6 +9,8 @@ Guided by Dr. [Florent Evariste Forest](https://people.epfl.ch/florent.forest/?l
 
 Supervisor at EPFL, Switzerland: Prof. [Olga Fink](https://people.epfl.ch/olga.fink?lang=en), and co-supervisor at KTH, Sweden: Prof. [Milan Horemuz](https://www.kth.se/profile/horemuz)
 
+For the full thesis, please visit: https://kth.diva-portal.org/smash/record.jsf?pid=diva2:1809735
+
 ## Table of contents
 
 - [Dataset](#Dataset)
